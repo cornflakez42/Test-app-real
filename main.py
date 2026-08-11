@@ -37,15 +37,3 @@ while True:
     else:
         print(YELLOW + "Invalid option, please type calculator, age, guess, or exit.")
         time.sleep(1.5)
-        sys.exit(0)
-    else:
-        print(YELLOW + "Invalid option, please type calculator, age, guess, or exit.")
-        time.sleep(1.5)
-    elif choice =="guess" or choice =="game":
-        game()    
-    elif choice == "exit" or choice == "q":
-        print(GREEN + "bye")
-        sys.exit(0)
-    else:
-        print(YELLOW + "Invalid option, please type calculator, age, or exit.")
-        time.sleep(1.5)
