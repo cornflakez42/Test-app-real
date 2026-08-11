@@ -20,7 +20,6 @@ RED = "\033[31m"
 
 # Main menu loop
 while True:
-    # Use standard screen clearing or print newlines if clear isn't supported on mobile
     os.system('clear')
     
     menu_prompt = YELLOW + "would you like to use " + MAGENTA + "calculator" + YELLOW + ", age, " + GREEN + "guessing " + RED + "exit?: " + CYAN
@@ -34,6 +33,10 @@ while True:
         game()    
     elif choice == "exit" or choice == "q":
         print(GREEN + "bye")
+        sys.exit(0)
+    else:
+        print(YELLOW + "Invalid option, please type calculator, age, guess, or exit.")
+        time.sleep(1.5)
         sys.exit(0)
     else:
         print(YELLOW + "Invalid option, please type calculator, age, guess, or exit.")
