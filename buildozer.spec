@@ -11,4 +11,7 @@ osx.python_version = 3
 osx.kivy_version = 1.9.1
 fullscreen = 0
 android.permissions = INTERNET
+# (bool) Indicate whether you accept the Android SDK license
+android.accept_sdk_license = True
+
 
