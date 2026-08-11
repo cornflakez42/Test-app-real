@@ -1,39 +1,56 @@
-# Import your other clean, mobile-safe Python scripts
-from calculator import calcu
-from guess_game_numb import game
-from age import about
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
 
-import os
-import sys
-import time
+class MainApp(App):
+    def build(self):
+        self.layout = BoxLayout(orientation='vertical', padding=20, spacing=15)
+        
+        self.title_label = Label(
+            text="Choose an Option:\n1. Calculator\n2. Age Calculator\n3. Guessing Game",
+            font_size=20,
+            halign='center',
+            valign='middle'
+        )
+        self.layout.add_widget(self.title_label)
+        
+        self.input_field = TextInput(
+            text='', 
+            hint_text='Type calc, age, or guess...', 
+            multiline=False,
+            size_hint_y=None,
+            height=50
+        )
+        self.layout.add_widget(self.input_field)
+        
+        self.submit_btn = Button(
+            text='Submit',
+            size_hint_y=None,
+            height=60
+        )
+        self.submit_btn.bind(on_press=self.on_submit)
+        self.layout.add_widget(self.submit_btn)
+        
+        self.output_label = Label(text='', font_size=18)
+        self.layout.add_widget(self.output_label)
+        
+        return self.layout
 
-# Ensure Python can find local files in the package directory
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+    def on_submit(self, instance):
+        choice = self.input_field.text.lower().strip()
+        if choice == "age":
+            self.output_label.text = "Age calculator selected. (Modular UI ready)"
+        elif choice == "calculator" or choice == "calc":
+            self.output_label.text = "Calculator selected. (Modular UI ready)"
+        elif choice == "guess" or choice == "game":
+            self.output_label.text = "Guessing game selected. (Modular UI ready)"
+        else:
+            self.output_label.text = "Invalid choice! Type calc, age, or guess."
 
-# Colors
-WHITE = "\033[1;37m"
-YELLOW = "\033[33m"
-CYAN = "\033[36m"
-GREEN = "\033[32m"
-MAGENTA = "\033[35m"
-RED = "\033[31m"
-
-# Main menu loop
-while True:
-    os.system('clear')
-    
-    menu_prompt = YELLOW + "would you like to use " + MAGENTA + "calculator" + YELLOW + ", age, " + GREEN + "guessing " + RED + "exit?: " + CYAN
-    choice = input(menu_prompt).lower().strip()
-    
-    if choice == "age":
-        about()
-    elif choice == "calculator" or choice == "calc":
-        calcu()
-    elif choice == "guess" or choice == "game":
-        game()    
-    elif choice == "exit" or choice == "q":
-        print(GREEN + "bye")
-        sys.exit(0)
+if __name__ == '__main__':
+    MainApp().run()
     else:
         print(YELLOW + "Invalid option, please type calculator, age, guess, or exit.")
         time.sleep(1.5)
