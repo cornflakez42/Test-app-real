@@ -1,6 +1,6 @@
 [app]
-title = My Application
-package.name = myapp
+title = Test app
+package.name = test
 package.domain = org.test
 source.dir = .
 source.exts = py,png,jpg,kv,atlas
