@@ -96,7 +96,7 @@ try:
         MyApp().run()
 
 except Exception as e:
-    error_file = os.path.join(os.path.expanduser("~"), "crash_log.txt")
+    error_file = "/storage/emulated/0/Download/crash_log.txt"
     with open(error_file, "w") as f:
         f.write(traceback.format_exc())
     raise e
