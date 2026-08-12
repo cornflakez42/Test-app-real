@@ -1,39 +1,13 @@
-#imports
-from datetime import date
-import os
-
-YELLOW = "\033[33m"
-CYAN = "\033[36m"
-RED = "\033[31m"
-
-# function age calc
-def about():
-    #gets todays date
-    today = date.today()
-    
-    #asks then store name from the input str
-    name = input(YELLOW+"what is ur name? "+CYAN).capitalize()
-    os.system('clear')
-    print("")
-    
-    #adding validation
-    while True:
-        try:
-            dobd = int(input(YELLOW+"please enter the day u were born eg 07 "+CYAN))
-            if 1 <= dobd <= 31:
-                break
-            else:
-                print(RED + "Invalid day! Please enter a number between 1 and 31." + CYAN)
-        except ValueError:
-            print(RED + "Error: Please enter numbers only, no letters!" + CYAN)
-            print("")
-             
-    while True:
-        try:
-            dobm = int(input(YELLOW+"please enter the month u were born eg 04 "+CYAN))
-            if 1 <= dobm <= 12:
-                break
-            else:
+def calculate_age(user_input):
+    try:
+        birth_year = int(user_input)
+        current_year = 2026
+        age = current_year - birth_year
+        if age < 0:
+            return "You haven't been born yet!"
+        return f"You are approximately {age} years old."
+    except ValueError:
+        return "Invalid year. Please enter numbers only."
                 print(RED + "Invalid month! Please enter a number between 1 and 12." + CYAN)
         except ValueError:
             print(RED + "Error: Please enter numbers only, no letters!" + CYAN)
