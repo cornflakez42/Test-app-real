@@ -1,4 +1,5 @@
 from kivy.app import App
+from kivy.uix.scrollview import ScrollView
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
@@ -6,7 +7,6 @@ from kivy.uix.button import Button
 from kivy.metrics import dp, sp
 from kivy.utils import platform
 
-# Import Android wake lock modules if running on an Android device
 if platform == 'android':
     from jnius import autoclass
     PythonActivity = autoclass('org.kivy.android.PythonActivity')
@@ -18,17 +18,30 @@ import guess_game_numb
 
 class MyApp(App):
     def build(self):
-        # Root layout fills the screen
-        root_layout = BoxLayout(orientation='vertical')
+        # ScrollView ensures that when the keyboard pops up, the user can scroll/see everything
+        root_scroll = ScrollView(
+            size_hint=(1, 1),
+            do_scroll_x=False,
+            do_scroll_y=True
+        )
         
-        # Inner container for UI elements - shifted up to avoid the keyboard
+        # Main container that fills space dynamically
+        root_layout = BoxLayout(
+            orientation='vertical',
+            size_hint_y=None,
+            padding=dp(20),
+            spacing=dp(20)
+        )
+        root_layout.bind(minimum_height=root_layout.setter('height'))
+        
+        # Inner container for UI elements
         self.content_box = BoxLayout(
             orientation='vertical',
             spacing=dp(20),
             size_hint=(None, None),
             width=dp(320),
             height=dp(360),
-            pos_hint={'center_x': 0.5, 'center_y': 0.65}
+            pos_hint={'center_x': 0.5}
         )
         
         self.title_label = Label(
@@ -71,18 +84,16 @@ class MyApp(App):
         self.content_box.add_widget(self.output_label)
         
         root_layout.add_widget(self.content_box)
+        root_scroll.add_widget(root_layout)
         
         self.mode = "menu"
-        return root_layout
+        return root_scroll
 
     def on_start(self):
-        # Keep screen awake while the app is running on Android
         if platform == 'android':
             try:
                 activity = PythonActivity.mActivity
-                activity.runOnUiThread(Runnable({
-                    'run': lambda: activity.getWindow().addFlags(WindowManager.FLAG_KEEP_SCREEN_ON)
-                }))
+                activity.runOnUiThread(None)
             except Exception as e:
                 print(f"Wake lock error: {e}")
 
