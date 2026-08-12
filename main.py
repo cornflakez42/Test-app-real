@@ -1,102 +1,8 @@
-from kivy.app import App
-from kivy.uix.scrollview import ScrollView
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.label import Label
-from kivy.uix.textinput import TextInput
-from kivy.uix.button import Button
-from kivy.metrics import dp, sp
-from kivy.utils import platform
-
-if platform == 'android':
-    from jnius import autoclass
-    PythonActivity = autoclass('org.kivy.android.PythonActivity')
-    WindowManager = autoclass('android.view.WindowManager$LayoutParams')
-
 import age
 import calculator
 import guess_game_numb
 
-class MyApp(App):
-    def build(self):
-        # ScrollView ensures that when the keyboard pops up, the user can scroll/see everything
-        root_scroll = ScrollView(
-            size_hint=(1, 1),
-            do_scroll_x=False,
-            do_scroll_y=True
-        )
-        
-        # Main container that fills space dynamically
-        root_layout = BoxLayout(
-            orientation='vertical',
-            size_hint_y=None,
-            padding=dp(20),
-            spacing=dp(20)
-        )
-        root_layout.bind(minimum_height=root_layout.setter('height'))
-        
-        # Inner container for UI elements
-        self.content_box = BoxLayout(
-            orientation='vertical',
-            spacing=dp(20),
-            size_hint=(None, None),
-            width=dp(320),
-            height=dp(360),
-            pos_hint={'center_x': 0.5}
-        )
-        
-        self.title_label = Label(
-            text="Choose an Option:\nage, calculator, guess",
-            font_size=sp(20),
-            halign='center',
-            valign='middle',
-            size_hint_y=None,
-            height=dp(80)
-        )
-        self.title_label.bind(size=lambda s, w: setattr(s, 'text_size', w))
-        self.content_box.add_widget(self.title_label)
-        
-        self.input_field = TextInput(
-            text='',
-            hint_text='Type choice or value',
-            multiline=False,
-            size_hint_y=None,
-            height=dp(50)
-        )
-        self.content_box.add_widget(self.input_field)
-        
-        self.submit_btn = Button(
-            text='Submit',
-            font_size=sp(18),
-            size_hint_y=None,
-            height=dp(60)
-        )
-        self.submit_btn.bind(on_press=self.on_submit)
-        self.content_box.add_widget(self.submit_btn)
-        
-        self.output_label = Label(
-            text='',
-            font_size=sp(18),
-            halign='center',
-            size_hint_y=None,
-            height=dp(60)
-        )
-        self.output_label.bind(size=lambda s, w: setattr(s, 'text_size', w))
-        self.content_box.add_widget(self.output_label)
-        
-        root_layout.add_widget(self.content_box)
-        root_scroll.add_widget(root_layout)
-        
-        self.mode = "menu"
-        return root_scroll
-
-    def on_start(self):
-        if platform == 'android':
-            try:
-                activity = PythonActivity.mActivity
-                activity.runOnUiThread(None)
-            except Exception as e:
-                print(f"Wake lock error: {e}")
-
+# inside your MyApp class:
     def on_submit(self, instance):
         user_text = self.input_field.text.strip()
         
@@ -104,40 +10,44 @@ class MyApp(App):
             choice = user_text.lower()
             if choice == "age":
                 self.mode = "age"
-                self.title_label.text = "Age Calculator:\nEnter your birth year"
+                age.reset_age_state()
+                self.title_label.text = "Age Calculator:\nWhat is your name?"
                 self.output_label.text = ""
             elif choice in ["calculator", "calc"]:
                 self.mode = "calculator"
-                self.title_label.text = "Calculator:\nEnter expression (e.g. 5+5)"
+                calculator.reset_calc_state()
+                self.title_label.text = "Calculator:\nEnter your first number:"
                 self.output_label.text = ""
-            elif choice in ["guess", "game", "guess game"]:
+            elif choice in ["guess", "game"]:
                 self.mode = "guess"
                 guess_game_numb.start_game()
-                self.title_label.text = "Guessing Game:\nEnter a number (1-100)"
-                self.output_label.text = "Game started! Make a guess."
+                self.title_label.text = "Guessing Game (1-30):\nEnter a number"
+                self.output_label.text = "Game started!"
             else:
                 self.output_label.text = "Unknown choice, try again."
                 
         elif self.mode == "age":
-            result = age.calculate_age(user_text)
-            self.output_label.text = result
-            self.mode = "menu"
-            self.title_label.text = "Choose an Option:\nage, calculator, guess"
-            
-        elif self.mode == "calculator":
-            result = calculator.calculate(user_text)
-            self.output_label.text = result
-            self.mode = "menu"
-            self.title_label.text = "Choose an Option:\nage, calculator, guess"
-            
-        elif self.mode == "guess":
-            result = guess_game_numb.play_turn(user_text)
-            self.output_label.text = result
-            if "Won" in result or "Correct" in result:
+            msg, sub_state = age.process_age_input(user_text)
+            self.output_label.text = msg
+            if sub_state == "done":
                 self.mode = "menu"
                 self.title_label.text = "Choose an Option:\nage, calculator, guess"
                 
+        elif self.mode == "calculator":
+            msg, sub_state = calculator.process_calculator_input(user_text)
+            self.output_label.text = msg
+            if sub_state == "done":
+                self.mode = "menu"
+                self.title_label.text = "Choose an Option:\nage, calculator, guess"
+                
+        elif self.mode == "guess":
+            try:
+                result = guess_game_numb.play_turn(user_text)
+                self.output_label.text = str(result)
+                if "Correct" in result:
+                    self.mode = "menu"
+                    self.title_label.text = "Choose an Option:\nage, calculator, guess"
+            except Exception:
+                self.output_label.text = "Invalid input! Enter a number."
+                
         self.input_field.text = ""
-
-if __name__ == '__main__':
-    MyApp().run()
