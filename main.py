@@ -4,8 +4,6 @@ from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 
-# Import your other scripts here (make sure age.py, calculator.py, 
-# and guess_game_numb.py are in the same folder)
 import age
 import calculator
 import guess_game_numb
@@ -16,7 +14,7 @@ class MyApp(App):
         
         self.title_label = Label(
             text="Choose an Option: age, calculator, guess",
-            font_size=20,
+            font_size=18,
             halign='center',
             valign='middle'
         )
@@ -24,7 +22,7 @@ class MyApp(App):
         
         self.input_field = TextInput(
             text='',
-            hint_text='Type calc, age, or guess',
+            hint_text='Type your choice or value here',
             multiline=False,
             size_hint_y=None,
             height=50
@@ -34,6 +32,66 @@ class MyApp(App):
         self.submit_btn = Button(
             text='Submit',
             size_hint_y=None,
+            height=60
+        )
+        self.submit_btn.bind(on_press=self.on_submit)
+        self.layout.add_widget(self.submit_btn)
+        
+        self.output_label = Label(
+            text='',
+            font_size=16,
+            halign='center'
+        )
+        self.layout.add_widget(self.output_label)
+        
+        # Keep track of active mode ("menu", "age", "calculator", "guess")
+        self.mode = "menu"
+        return self.layout
+
+    def on_submit(self, instance):
+        user_text = self.input_field.text.strip()
+        
+        if self.mode == "menu":
+            choice = user_text.lower()
+            if choice == "age":
+                self.mode = "age"
+                self.title_label.text = "Age Calculator: Enter your birth year"
+                self.output_label.text = ""
+            elif choice in ["calculator", "calc"]:
+                self.mode = "calculator"
+                self.title_label.text = "Calculator: Enter an expression (e.g., 5 + 5)"
+                self.output_label.text = ""
+            elif choice in ["guess", "game", "guess game"]:
+                self.mode = "guess"
+                guess_game_numb.start_game()
+                self.title_label.text = "Guessing Game: Enter a number (1-100)"
+                self.output_label.text = "Game started! Make a guess."
+            else:
+                self.output_label.text = "Unknown choice, try again."
+                
+        elif self.mode == "age":
+            result = age.calculate_age(user_text)
+            self.output_label.text = result
+            self.mode = "menu"
+            self.title_label.text = "Choose an Option: age, calculator, guess"
+            
+        elif self.mode == "calculator":
+            result = calculator.calculate(user_text)
+            self.output_label.text = result
+            self.mode = "menu"
+            self.title_label.text = "Choose an Option: age, calculator, guess"
+            
+        elif self.mode == "guess":
+            result = guess_game_numb.play_turn(user_text)
+            self.output_label.text = result
+            if "Won" in result or "Correct" in result:
+                self.mode = "menu"
+                self.title_label.text = "Choose an Option: age, calculator, guess"
+                
+        self.input_field.text = ""
+
+if __name__ == '__main__':
+    MyApp().run()
             height=60
         )
         # Properly bound to the on_submit function
