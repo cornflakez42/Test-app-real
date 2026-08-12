@@ -3,7 +3,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
-from kivy.metrics import dp
+from kivy.metrics import dp, sp
 from kivy.utils import platform
 
 # Import Android wake lock modules if running on an Android device
@@ -18,8 +18,10 @@ import guess_game_numb
 
 class MyApp(App):
     def build(self):
+        # Root layout fills the screen
         root_layout = BoxLayout(orientation='vertical')
         
+        # Inner container for UI elements - centered cleanly with proportional dp sizing
         self.content_box = BoxLayout(
             orientation='vertical',
             spacing=dp(20),
@@ -31,7 +33,7 @@ class MyApp(App):
         
         self.title_label = Label(
             text="Choose an Option:\nage, calculator, guess",
-            font_size=dp(20),
+            font_size=sp(20),  # Scaled font size
             halign='center',
             valign='middle',
             size_hint_y=None,
@@ -51,6 +53,7 @@ class MyApp(App):
         
         self.submit_btn = Button(
             text='Submit',
+            font_size=sp(18),
             size_hint_y=None,
             height=dp(60)
         )
@@ -59,7 +62,7 @@ class MyApp(App):
         
         self.output_label = Label(
             text='',
-            font_size=dp(18),
+            font_size=sp(18),  # Scaled font size
             halign='center',
             size_hint_y=None,
             height=dp(60)
