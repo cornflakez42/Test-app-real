@@ -10,15 +10,34 @@ import guess_game_numb
 
 class MyApp(App):
     def build(self):
-        self.layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
+        # Root layout fills the screen and centers content vertically
+        root_layout = BoxLayout(
+            orientation='vertical', 
+            padding=20, 
+            spacing=15
+        )
+        
+        # Inner container for UI elements so they don't stretch fullscreen
+        self.content_box = BoxLayout(
+            orientation='vertical',
+            spacing=15,
+            size_hint_y=None,
+            height=320
+        )
         
         self.title_label = Label(
-            text="Choose an Option: age, calculator, guess",
+            text="Choose an Option:\nage, calculator, guess",
             font_size=18,
             halign='center',
-            valign='middle'
+            valign='middle',
+            size_hint_y=None,
+            height=80
         )
-        self.layout.add_widget(self.title_label)
+        # Ensure text wraps or centers nicely in the label box
+        self.title_label.bind(
+            size=lambda s, w: setattr(s, 'text_size', w)
+        )
+        self.content_box.add_widget(self.title_label)
         
         self.input_field = TextInput(
             text='',
@@ -27,7 +46,7 @@ class MyApp(App):
             size_hint_y=None,
             height=50
         )
-        self.layout.add_widget(self.input_field)
+        self.content_box.add_widget(self.input_field)
         
         self.submit_btn = Button(
             text='Submit',
@@ -35,18 +54,26 @@ class MyApp(App):
             height=60
         )
         self.submit_btn.bind(on_press=self.on_submit)
-        self.layout.add_widget(self.submit_btn)
+        self.content_box.add_widget(self.submit_btn)
         
         self.output_label = Label(
             text='',
             font_size=16,
-            halign='center'
+            halign='center',
+            size_hint_y=None,
+            height=60
         )
-        self.layout.add_widget(self.output_label)
+        self.output_label.bind(
+            size=lambda s, w: setattr(s, 'text_size', w)
+        )
+        self.content_box.add_widget(self.output_label)
+        
+        # Add the compact content box into the center of the root layout
+        root_layout.add_widget(self.content_box)
         
         # Keep track of active mode ("menu", "age", "calculator", "guess")
         self.mode = "menu"
-        return self.layout
+        return root_layout
 
     def on_submit(self, instance):
         user_text = self.input_field.text.strip()
@@ -55,16 +82,16 @@ class MyApp(App):
             choice = user_text.lower()
             if choice == "age":
                 self.mode = "age"
-                self.title_label.text = "Age Calculator: Enter your birth year"
+                self.title_label.text = "Age Calculator:\nEnter your birth year"
                 self.output_label.text = ""
             elif choice in ["calculator", "calc"]:
                 self.mode = "calculator"
-                self.title_label.text = "Calculator: Enter an expression (e.g., 5 + 5)"
+                self.title_label.text = "Calculator:\nEnter an expression (e.g., 5 + 5)"
                 self.output_label.text = ""
             elif choice in ["guess", "game", "guess game"]:
                 self.mode = "guess"
                 guess_game_numb.start_game()
-                self.title_label.text = "Guessing Game: Enter a number (1-100)"
+                self.title_label.text = "Guessing Game:\nEnter a number (1-100)"
                 self.output_label.text = "Game started! Make a guess."
             else:
                 self.output_label.text = "Unknown choice, try again."
@@ -73,22 +100,23 @@ class MyApp(App):
             result = age.calculate_age(user_text)
             self.output_label.text = result
             self.mode = "menu"
-            self.title_label.text = "Choose an Option: age, calculator, guess"
+            self.title_label.text = "Choose an Option:\nage, calculator, guess"
             
         elif self.mode == "calculator":
             result = calculator.calculate(user_text)
             self.output_label.text = result
             self.mode = "menu"
-            self.title_label.text = "Choose an Option: age, calculator, guess"
+            self.title_label.text = "Choose an Option:\nage, calculator, guess"
             
         elif self.mode == "guess":
             result = guess_game_numb.play_turn(user_text)
             self.output_label.text = result
             if "Won" in result or "Correct" in result:
                 self.mode = "menu"
-                self.title_label.text = "Choose an Option: age, calculator, guess"
+                self.title_label.text = "Choose an Option:\nage, calculator, guess"
                 
         self.input_field.text = ""
 
 if __name__ == '__main__':
     MyApp().run()
+    
