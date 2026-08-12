@@ -23,19 +23,26 @@ try:
             root = BoxLayout(orientation="vertical", padding=10, spacing=10)
 
             self.title_label = Label(
-                text="Choose an Option:\nage, calculator, guess", font_size=20
+                text="Choose an Option:\nage, calculator, guess",
+                font_size="24sp",
+                size_hint_y=None,
+                height=120,
             )
             root.add_widget(self.title_label)
 
-            self.output_label = Label(text="", font_size=18)
+            self.output_label = Label(
+                text="", font_size="22sp", size_hint_y=None, height=150
+            )
             root.add_widget(self.output_label)
 
             self.input_field = TextInput(
-                text="", multiline=False, size_hint_y=None, height=50
+                text="", multiline=False, size_hint_y=None, height=60, font_size="22sp"
             )
             root.add_widget(self.input_field)
 
-            submit_btn = Button(text="Submit", size_hint_y=None, height=50)
+            submit_btn = Button(
+                text="Submit", size_hint_y=None, height=60, font_size="22sp"
+            )
             submit_btn.bind(on_press=self.on_submit)
             root.add_widget(submit_btn)
 
