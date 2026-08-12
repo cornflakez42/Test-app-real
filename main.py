@@ -3,6 +3,14 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
+from kivy.metrics import dp
+from kivy.utils import platform
+
+# Import Android wake lock modules if running on an Android device
+if platform == 'android':
+    from jnius import autoclass
+    PythonActivity = autoclass('org.kivy.android.PythonActivity')
+    WindowManager = autoclass('android.view.WindowManager$LayoutParams')
 
 import age
 import calculator
@@ -10,70 +18,70 @@ import guess_game_numb
 
 class MyApp(App):
     def build(self):
-        # Root layout fills the screen and centers content vertically
-        root_layout = BoxLayout(
-            orientation='vertical', 
-            padding=20, 
-            spacing=15
-        )
+        root_layout = BoxLayout(orientation='vertical')
         
-        # Inner container for UI elements so they don't stretch fullscreen
         self.content_box = BoxLayout(
             orientation='vertical',
-            spacing=15,
-            size_hint_y=None,
-            height=320
+            spacing=dp(20),
+            size_hint=(None, None),
+            width=dp(320),
+            height=dp(360),
+            pos_hint={'center_x': 0.5, 'center_y': 0.5}
         )
         
         self.title_label = Label(
             text="Choose an Option:\nage, calculator, guess",
-            font_size=18,
+            font_size=dp(20),
             halign='center',
             valign='middle',
             size_hint_y=None,
-            height=80
+            height=dp(80)
         )
-        # Ensure text wraps or centers nicely in the label box
-        self.title_label.bind(
-            size=lambda s, w: setattr(s, 'text_size', w)
-        )
+        self.title_label.bind(size=lambda s, w: setattr(s, 'text_size', w))
         self.content_box.add_widget(self.title_label)
         
         self.input_field = TextInput(
             text='',
-            hint_text='Type your choice or value here',
+            hint_text='Type choice or value',
             multiline=False,
             size_hint_y=None,
-            height=50
+            height=dp(50)
         )
         self.content_box.add_widget(self.input_field)
         
         self.submit_btn = Button(
             text='Submit',
             size_hint_y=None,
-            height=60
+            height=dp(60)
         )
         self.submit_btn.bind(on_press=self.on_submit)
         self.content_box.add_widget(self.submit_btn)
         
         self.output_label = Label(
             text='',
-            font_size=16,
+            font_size=dp(18),
             halign='center',
             size_hint_y=None,
-            height=60
+            height=dp(60)
         )
-        self.output_label.bind(
-            size=lambda s, w: setattr(s, 'text_size', w)
-        )
+        self.output_label.bind(size=lambda s, w: setattr(s, 'text_size', w))
         self.content_box.add_widget(self.output_label)
         
-        # Add the compact content box into the center of the root layout
         root_layout.add_widget(self.content_box)
         
-        # Keep track of active mode ("menu", "age", "calculator", "guess")
         self.mode = "menu"
         return root_layout
+
+    def on_start(self):
+        # Keep screen awake while the app is running on Android
+        if platform == 'android':
+            try:
+                activity = PythonActivity.mActivity
+                activity.runOnUiThread(Runnable({
+                    'run': lambda: activity.getWindow().addFlags(WindowManager.FLAG_KEEP_SCREEN_ON)
+                }))
+            except Exception as e:
+                print(f"Wake lock error: {e}")
 
     def on_submit(self, instance):
         user_text = self.input_field.text.strip()
@@ -86,7 +94,7 @@ class MyApp(App):
                 self.output_label.text = ""
             elif choice in ["calculator", "calc"]:
                 self.mode = "calculator"
-                self.title_label.text = "Calculator:\nEnter an expression (e.g., 5 + 5)"
+                self.title_label.text = "Calculator:\nEnter expression (e.g. 5+5)"
                 self.output_label.text = ""
             elif choice in ["guess", "game", "guess game"]:
                 self.mode = "guess"
@@ -119,4 +127,3 @@ class MyApp(App):
 
 if __name__ == '__main__':
     MyApp().run()
-    
