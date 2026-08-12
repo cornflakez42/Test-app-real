@@ -15,6 +15,9 @@ source.dir = .
 # (list) Source files to include (leave empty to include all the files)
 source.include_exts = py,png,jpg,kv,atlas
 
+# (list) List of inclusions (patterns syntax)
+source.include_patterns = *.py
+
 # (str) Application versioning
 version = 0.1
 
