@@ -1,39 +1,24 @@
 import random
-import os
-import time
 
-# color
-WHITE = "\033[1;37m"
-CYAN = "\033[36m"
-GREEN = "\033[32m"
-RED = "\033[31m"
-YELLOW = "\033[33m"
+# Store game state globally within the module
+target_number = 0
 
-# new function guessing game
-def game():
-    randomnumb = random.randint(0, 30)
-    attempts = 0
-    
-    # Start the timer using standard Python time
-    start_time = time.time()
+def start_game():
+    global target_number
+    target_number = random.randint(1, 100)
 
-    while True:
-        print(CYAN + "guess the number between 1 - 30/ debug = ", randomnumb)
-        
-        try:
-            guess = int(input(CYAN + "enter your guess "))
-        except ValueError:
-            print("please enter number")
-            print("")
-            continue
-
-        print("")
-        attempts += 1
-        os.system("clear")
-
-        if guess < randomnumb:
-            print("too low try again ")
-            print("debug num trys", WHITE, attempts)
+def play_turn(user_input):
+    global target_number
+    try:
+        guess = int(user_input)
+        if guess < target_number:
+            return "Too low! Try a higher number."
+        elif guess > target_number:
+            return "Too high! Try a lower number."
+        else:
+            return "Correct! You Won the Game!"
+    except ValueError:
+        return "Please enter a valid number."
             print("")
         elif guess > randomnumb:
             print("too high try again ")
