@@ -21,19 +21,19 @@ class MyApp(App):
         # Root layout fills the screen
         root_layout = BoxLayout(orientation='vertical')
         
-        # Inner container for UI elements - centered cleanly with proportional dp sizing
+        # Inner container for UI elements - shifted up to avoid the keyboard
         self.content_box = BoxLayout(
             orientation='vertical',
             spacing=dp(20),
             size_hint=(None, None),
             width=dp(320),
             height=dp(360),
-            pos_hint={'center_x': 0.5, 'center_y': 0.5}
+            pos_hint={'center_x': 0.5, 'center_y': 0.65}
         )
         
         self.title_label = Label(
             text="Choose an Option:\nage, calculator, guess",
-            font_size=sp(20),  # Scaled font size
+            font_size=sp(20),
             halign='center',
             valign='middle',
             size_hint_y=None,
@@ -62,7 +62,7 @@ class MyApp(App):
         
         self.output_label = Label(
             text='',
-            font_size=sp(18),  # Scaled font size
+            font_size=sp(18),
             halign='center',
             size_hint_y=None,
             height=dp(60)
