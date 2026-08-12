@@ -57,3 +57,4 @@ def on_submit(self, _instance):
             self.output_label.text = "Invalid input! Enter a number."
 
     self.input_field.text = ""
+    
