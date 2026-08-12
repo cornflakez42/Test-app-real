@@ -12,6 +12,7 @@ try:
     import kivy
     from kivy.app import App
     from kivy.uix.boxlayout import BoxLayout
+    from kivy.uix.scrollview import ScrollView
     from kivy.uix.label import Label
     from kivy.uix.textinput import TextInput
     from kivy.uix.button import Button
@@ -20,23 +21,52 @@ try:
         def build(self):
             self.mode = "menu"
 
-            root = BoxLayout(orientation="vertical", padding=10, spacing=10)
+            # Outer ScrollView allows the screen to adapt when the keyboard pops up
+            scroll = ScrollView(do_scroll_x=False)
+
+            # Inner layout uses a flexible height layout centered vertically
+            root = BoxLayout(
+                orientation="vertical",
+                padding=30,
+                spacing=20,
+                size_hint_y=None,
+                size_hint_x=1,
+            )
+            root.bind(minimum_height=root.setter("height"))
+
+            # Spacer to push contents toward the center
+            top_spacer = BoxLayout(size_hint_y=None, height=50)
+            root.add_widget(top_spacer)
 
             self.title_label = Label(
                 text="Choose an Option:\nage, calculator, guess",
-                font_size="24sp",
+                font_size="22sp",
                 size_hint_y=None,
                 height=120,
+                halign="center",
+                valign="middle",
             )
+            self.title_label.bind(size=self.title_label.setter("text_size"))
             root.add_widget(self.title_label)
 
             self.output_label = Label(
-                text="", font_size="22sp", size_hint_y=None, height=150
+                text="",
+                font_size="20sp",
+                size_hint_y=None,
+                height=150,
+                halign="center",
+                valign="middle",
             )
+            self.output_label.bind(size=self.output_label.setter("text_size"))
             root.add_widget(self.output_label)
 
             self.input_field = TextInput(
-                text="", multiline=False, size_hint_y=None, height=60, font_size="22sp"
+                text="",
+                multiline=False,
+                size_hint_y=None,
+                height=60,
+                font_size="22sp",
+                halign="center",
             )
             root.add_widget(self.input_field)
 
@@ -46,7 +76,8 @@ try:
             submit_btn.bind(on_press=self.on_submit)
             root.add_widget(submit_btn)
 
-            return root
+            scroll.add_widget(root)
+            return scroll
 
         def on_submit(self, _instance):
             user_text = self.input_field.text.strip()
