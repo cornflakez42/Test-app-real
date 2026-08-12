@@ -1,39 +1,17 @@
-MAGENTA = "\033[35m"
-GREEN = "\033[32m"
-RED = "\033[31m"
-YELLOW = "\033[33m"
-CYAN = "\033[36m"
-
-# calculator func start
-def calcu():
-    calc = 0
-    while True: 
-        # --- VALIDATE FIRST NUMBER ---
-        while True:
-            try:
-                numb1 = int(input(MAGENTA + "what is your first number: " + GREEN))
-                break 
-            except ValueError:
-                print(RED + "Error: Please enter numbers only, no letters!" + GREEN)
-                print()
-
-        # --- SAFE OPERATOR INPUT FOR ANDROID ---
-        while True:
-            operator = input(MAGENTA + "please enter the operator (+, -, *, /): " + GREEN).strip()
-            if operator in ["+", "-", "/", "*"]:
-                break
-            print(RED + "Invalid operator! Please enter +, -, *, or /." + GREEN)
-            print()
-
-        # --- VALIDATE SECOND NUMBER ---
-        while True:
-            try:
-                numb2 = int(input(MAGENTA + "please enter the second number: " + GREEN))
-                break 
-            except ValueError:
-                print(RED + "Error: Please enter numbers only, no letters!" + GREEN)
-                print()
-        
+def calculate(user_input):
+    try:
+        # Safely evaluate simple math expressions
+        # (Restricted to basic safe characters for security)
+        allowed_chars = set("0123456789+-*/.() ")
+        if not all(char in allowed_chars for char in user_input):
+            return "Invalid characters used in calculation."
+            
+        result = eval(user_input)
+        return f"Result: {result}"
+    except ZeroDivisionError:
+        return "Error: Cannot divide by zero."
+    except Exception:
+        return "Invalid calculation expression."
         # --- MATH LOGIC ---
         if operator == "+":
             calc = numb1 + numb2
