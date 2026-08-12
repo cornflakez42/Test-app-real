@@ -21,6 +21,12 @@ version = 0.1
 # (list) Application requirements
 requirements = python3,kivy
 
+# (str) Presplash of the application
+presplash.filename = %(source.dir)s/presplash.png
+
+# (str) Icon of the application
+icon.filename = %(source.dir)s/icon.png
+
 # (list) Supported orientations
 orientation = portrait
 
