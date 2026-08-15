@@ -70,11 +70,12 @@ def process_age_input(user_text):
                 ):
                     age -= 1
 
+                # CREATED FIRST
+                final_output = f"Your name is {temp_name}, age is {age}, born {temp_day:02d}/{temp_month:02d}/{dobyear}.\n(Press Submit to return to menu)"
+                
+                # RESET SECOND
                 reset_age_state()
-                return (
-                    f"Your name is {temp_name}, age is {age}, born {temp_day:02d}/{temp_month:02d}/{dobyear}.\n(Press Submit to return to menu)",
-                    "done",
-                )
+                return final_output, "done"
             else:
                 return f"Invalid year! Enter between 1900 and {today.year}.", "get_year"
         except ValueError:

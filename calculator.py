@@ -51,11 +51,12 @@ def process_calculator_input(user_text):
             elif operator == "*":
                 calc = numb1 * numb2
 
+            # CREATED FIRST
+            final_output = f"Result: {numb1} {operator} {numb2} = {calc}\n(Press Submit to return to menu)"
+            
+            # RESET SECOND
             reset_calc_state()
-            return (
-                f"Result: {numb1} {operator} {numb2} = {calc}\n(Press Submit to return to menu)",
-                "done",
-            )
+            return final_output, "done"
         except ValueError:
             return (
                 "Error: Please enter numbers only for the second number!",
