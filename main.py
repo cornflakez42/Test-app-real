@@ -78,6 +78,8 @@ try:
           height=50,
           font_size="20sp",
           halign="left",
+          padding_x=[10, 10],
+          padding_y=[12, 12],
       )
       root.add_widget(self.input_field)
 
@@ -117,10 +119,8 @@ try:
         msg, sub_state = age.process_age_input(user_text)
         if sub_state == "done":
           self.output_label.text = msg
-          self.title_label.text = (
-              "Choose an Option:\nage, calculator, guess"
-          )
-          self.mode = "menu"
+          self.title_label.text = "Finished! (Press Submit for menu)"
+          self.mode = "menu_reset"
         else:
           self.output_label.text = ""
           self.title_label.text = msg
@@ -129,13 +129,16 @@ try:
         msg, sub_state = calculator.process_calculator_input(user_text)
         if sub_state == "done":
           self.output_label.text = msg
-          self.title_label.text = (
-              "Choose an Option:\nage, calculator, guess"
-          )
-          self.mode = "menu"
+          self.title_label.text = "Result: (Press Submit for menu)"
+          self.mode = "menu_reset"
         else:
           self.output_label.text = ""
           self.title_label.text = msg
+
+      elif self.mode == "menu_reset":
+        self.mode = "menu"
+        self.title_label.text = "Choose an Option:\nage, calculator, guess"
+        self.output_label.text = ""
 
       elif self.mode == "guess":
         try:
