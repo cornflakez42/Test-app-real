@@ -22,7 +22,7 @@ source.include_patterns = *.py
 version = 0.1
 
 # (list) Application requirements
-requirements = python3,kivy,charset-normalizer==3.1.0
+requirements = python3,kivy
 
 # (str) Presplash of the application
 presplash.filename = %(source.dir)s/presplash.png
@@ -62,6 +62,9 @@ android.archs = arm64-v8a
 # (bool) enables Android auto backup feature (Android API >=23)
 android.allow_backup = True
 
+
+
+
 # (str) A display cutout is an area on some devices that extends into the display surface.
 android.display_cutout = shortEdges
 
@@ -72,3 +75,6 @@ log_level = 2
 
 # (int) Display warning if buildozer is run as root (0 = False, 1 = True)
 warn_on_root = 1
+
+# (str) python-for-android git clone branch or tag
+p4a.branch = master
