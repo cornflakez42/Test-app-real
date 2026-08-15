@@ -6,12 +6,14 @@ temp_name = ""
 temp_day = 0
 temp_month = 0
 
+
 def reset_age_state():
     global age_state, temp_name, temp_day, temp_month
     age_state = "get_name"
     temp_name = ""
     temp_day = 0
     temp_month = 0
+
 
 def process_age_input(user_text):
     global age_state, temp_name, temp_day, temp_month
@@ -22,7 +24,10 @@ def process_age_input(user_text):
             return "Please enter a valid name.", "get_name"
         temp_name = user_text.strip().capitalize()
         age_state = "get_day"
-        return f"Hello {temp_name}!\nPlease enter the day you were born (e.g. 07):", "get_day"
+        return (
+            f"Hello {temp_name}!\nPlease enter the day you were born (e.g. 07):",
+            "get_day",
+        )
 
     elif age_state == "get_day":
         try:
@@ -42,9 +47,15 @@ def process_age_input(user_text):
             if 1 <= dobm <= 12:
                 temp_month = dobm
                 age_state = "get_year"
-                return f"Please enter the year you were born (1900 - {today.year}):", "get_year"
+                return (
+                    f"Please enter the year you were born (1900 - {today.year}):",
+                    "get_year",
+                )
             else:
-                return "Invalid month! Please enter a number between 1 and 12.", "get_month"
+                return (
+                    "Invalid month! Please enter a number between 1 and 12.",
+                    "get_month",
+                )
         except ValueError:
             return "Error: Please enter numbers only for the month!", "get_month"
 
@@ -54,11 +65,16 @@ def process_age_input(user_text):
             if 1900 <= dobyear <= today.year:
                 # Calculate final age
                 age = today.year - dobyear
-                if temp_month > today.month or (temp_month == today.month and temp_day > today.day):
+                if temp_month > today.month or (
+                    temp_month == today.month and temp_day > today.day
+                ):
                     age -= 1
-                
+
                 reset_age_state()
-                return f"Your name is {temp_name}, age is {age}, born {temp_day:02d}/{temp_month:02d}/{dobyear}.\n(Press Submit to return to menu)", "done"
+                return (
+                    f"Your name is {temp_name}, age is {age}, born {temp_day:02d}/{temp_month:02d}/{dobyear}.\n(Press Submit to return to menu)",
+                    "done",
+                )
             else:
                 return f"Invalid year! Enter between 1900 and {today.year}.", "get_year"
         except ValueError:

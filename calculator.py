@@ -2,11 +2,13 @@ calc_state = "get_numb1"
 numb1 = 0
 operator = ""
 
+
 def reset_calc_state():
     global calc_state, numb1, operator
     calc_state = "get_numb1"
     numb1 = 0
     operator = ""
+
 
 def process_calculator_input(user_text):
     global calc_state, numb1, operator
@@ -24,7 +26,10 @@ def process_calculator_input(user_text):
         if op in ["+", "-", "/", "*"]:
             operator = op
             calc_state = "get_numb2"
-            return f"Expression: {numb1} {operator} [?]\nEnter the second number:", "get_numb2"
+            return (
+                f"Expression: {numb1} {operator} [?]\nEnter the second number:",
+                "get_numb2",
+            )
         else:
             return "Invalid operator! Please enter +, -, *, or /.", "get_operator"
 
@@ -34,7 +39,10 @@ def process_calculator_input(user_text):
             if operator == "/":
                 if numb2 == 0:
                     reset_calc_state()
-                    return "Error: Cannot divide by zero!\n(Press Submit to return to menu)", "done"
+                    return (
+                        "Error: Cannot divide by zero!\n(Press Submit to return to menu)",
+                        "done",
+                    )
                 calc = numb1 / numb2
             elif operator == "+":
                 calc = numb1 + numb2
@@ -44,8 +52,14 @@ def process_calculator_input(user_text):
                 calc = numb1 * numb2
 
             reset_calc_state()
-            return f"Result: {numb1} {operator} {numb2} = {calc}\n(Press Submit to return to menu)", "done"
+            return (
+                f"Result: {numb1} {operator} {numb2} = {calc}\n(Press Submit to return to menu)",
+                "done",
+            )
         except ValueError:
-            return "Error: Please enter numbers only for the second number!", "get_numb2"
+            return (
+                "Error: Please enter numbers only for the second number!",
+                "get_numb2",
+            )
 
     return "Calculator Menu", "menu"
