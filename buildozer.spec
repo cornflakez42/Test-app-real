@@ -22,7 +22,7 @@ source.include_patterns = *.py
 version = 0.1
 
 # (list) Application requirements
-requirements = python3,kivy
+requirements = python3,kivy,charset-normalizer<3.0.0
 
 # (str) Presplash of the application
 presplash.filename = %(source.dir)s/presplash.png
