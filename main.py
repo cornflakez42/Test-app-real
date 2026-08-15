@@ -16,6 +16,7 @@ try:
     from kivy.uix.label import Label
     from kivy.uix.textinput import TextInput
     from kivy.uix.button import Button
+    from kivy.metrics import dp  # Fix: Added dp for screen scaling
 
     class MyApp(App):
         def build(self):
@@ -25,14 +26,14 @@ try:
 
             root = BoxLayout(
                 orientation="vertical",
-                padding=30,
-                spacing=20,
+                padding=dp(30),  # Fix: Scaled padding
+                spacing=dp(20),  # Fix: Scaled spacing
                 size_hint_y=None,
                 size_hint_x=1,
             )
             root.bind(minimum_height=root.setter("height"))
 
-            top_spacer = BoxLayout(size_hint_y=None, height=30)
+            top_spacer = BoxLayout(size_hint_y=None, height=dp(30))
             root.add_widget(top_spacer)
 
             self.title_label = Label(
@@ -73,16 +74,17 @@ try:
                 text="",
                 multiline=False,
                 size_hint_y=None,
-                height=50,
+                height=dp(55),  # Fix: Scaled height
                 font_size="20sp",
                 halign="left",
-                padding_x=[10, 10],
-                padding_y=[12, 12],
+                padding_x=[dp(10), dp(10)],
+                padding_y=[dp(10), dp(10)],  # Fix: Reduced padding so text fits
+                foreground_color=(0, 0, 0, 1), # Fix: Explicitly black text
             )
             root.add_widget(self.input_field)
 
             submit_btn = Button(
-                text="Submit", size_hint_y=None, height=55, font_size="20sp"
+                text="Submit", size_hint_y=None, height=dp(55), font_size="20sp"
             )
             submit_btn.bind(on_press=self.on_submit)
             root.add_widget(submit_btn)
